@@ -37,7 +37,7 @@
 border-radius: 20px;</string>
      </property>
      <property name="text">
-      <string>TextLabel</string>
+      <string>l</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_2">
@@ -54,7 +54,7 @@ border-radius: 20px;</string>
 border-radius:20px;</string>
      </property>
      <property name="text">
-      <string>TextLabel</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_3">

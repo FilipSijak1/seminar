@@ -1,3 +1,4 @@
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -19,6 +20,7 @@ class Ui_MainWindow(object):
         self.label_2.setGeometry(QtCore.QRect(200, 80, 600, 381))
         self.label_2.setStyleSheet("background-color:rgba(0, 0, 0, 100);\n"
 "border-radius:20px;")
+        self.label_2.setText("")
         self.label_2.setObjectName("label_2")
         self.label_3 = QtWidgets.QLabel(self.widget)
         self.label_3.setGeometry(QtCore.QRect(435, 130, 120, 60))
@@ -249,8 +251,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "TextLabel"))
-        self.label_2.setText(_translate("MainWindow", "TextLabel"))
+        self.label.setText(_translate("MainWindow", "l"))
         self.label_3.setText(_translate("MainWindow", "Log In"))
         self.email.setPlaceholderText(_translate("MainWindow", "email"))
         self.password.setPlaceholderText(_translate("MainWindow", "password"))

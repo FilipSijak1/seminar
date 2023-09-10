@@ -15,7 +15,6 @@ from exceptions import (
     log_error,
 )
 import sqlite3
-import re
 
 class LoginApp(QMainWindow):
     def __init__(self):
@@ -108,6 +107,12 @@ class RegistrationWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.ui.user_register.clicked.connect(self.register)
+        self.ui.back.clicked.connect(self.back_main_window)
+
+    def back_main_window(self):
+        self.hide()
+        self.login_window = LoginApp()
+        self.login_window.show()
 
     def show_message_box(self, message):
         msg_box = QMessageBox()
