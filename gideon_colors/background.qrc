@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>gideon_colors.jpg</file>
+  </qresource>
+</RCC>
