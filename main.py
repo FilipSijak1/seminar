@@ -1,9 +1,10 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QLineEdit, QCheckBox
 from log import Ui_MainWindow
 from reg import Ui_reg_window
 from menu import Ui_menu
 from db import db
+from PyQt5.QtCore import Qt
 from exceptions import (
     log_error_empty,
     reg_error_taken,
@@ -28,6 +29,18 @@ class LoginApp(QMainWindow):
 
         self.registration_window = RegistrationWindow()
         self.menu_window = MenuWindow()
+
+        self.show_password_checkbox = QCheckBox("Show Password", self.ui.centralwidget)
+        self.show_password_checkbox.setGeometry(670, 270, 15, 15)
+        self.show_password_checkbox.setChecked(False)
+        self.show_password_checkbox.stateChanged.connect(self.toggle_password_visibility)
+        self.ui.password.setEchoMode(QLineEdit.Password)
+
+    def toggle_password_visibility(self, state):
+        if state == Qt.Checked:
+            self.ui.password.setEchoMode(QLineEdit.Normal)
+        else:
+            self.ui.password.setEchoMode(QLineEdit.Password)
 
     def show_message_box(self, message):
         msg_box = QMessageBox()
@@ -116,6 +129,38 @@ class RegistrationWindow(QMainWindow):
 
         self.ui.user_register.clicked.connect(self.register)
         self.ui.back.clicked.connect(self.back_main_window)
+
+        # Dodajemo dva nova QLineEdit polja za unos lozinke i ponovljene lozinke
+        self.password = self.ui.password
+        self.confirm_password = self.ui.confirm_password
+
+        # Dodajemo dva nova checkboxa za prikazivanje/skrivanje lozinke
+        self.show_password_checkbox = QCheckBox("Show Password", self.ui.centralwidget)
+        self.show_password_checkbox.setGeometry(670, 290, 15, 15)
+        self.show_password_checkbox.setChecked(False)
+        self.show_password_checkbox.stateChanged.connect(self.toggle_password_visibility)
+
+        self.show_confirm_password_checkbox = QCheckBox("Show Confirm Password", self.ui.centralwidget)
+        self.show_confirm_password_checkbox.setGeometry(670, 340, 15, 15)
+        self.show_confirm_password_checkbox.setChecked(False)
+        self.show_confirm_password_checkbox.stateChanged.connect(self.toggle_confirm_password_visibility)
+
+        # Postavljamo da se lozinka i ponovljena lozinka inicijalno prikazuju kao Password
+        self.password.setEchoMode(QLineEdit.Password)
+        self.confirm_password.setEchoMode(QLineEdit.Password)
+
+    def toggle_password_visibility(self, state):
+        if state == Qt.Checked:
+            self.password.setEchoMode(QLineEdit.Normal)
+        else:
+            self.password.setEchoMode(QLineEdit.Password)
+
+    def toggle_confirm_password_visibility(self, state):
+        if state == Qt.Checked:
+            self.confirm_password.setEchoMode(QLineEdit.Normal)
+        else:
+            self.confirm_password.setEchoMode(QLineEdit.Password)
+
 
     def back_main_window(self):
         self.hide()
