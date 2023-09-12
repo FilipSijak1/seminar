@@ -11,7 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_MainWindow(object):
+class Ui_menu(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1042, 847)
@@ -33,7 +33,7 @@ class Ui_MainWindow(object):
         self.label_2.setText("")
         self.label_2.setObjectName("label_2")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.widget)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(20, 30, 226, 731))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(20, 30, 226, 531))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -725,15 +725,15 @@ class Ui_MainWindow(object):
         font.setFamily("Lucida Sans")
         font.setPointSize(11)
         self.save_notation.setFont(font)
-        self.save_notation.setStyleSheet("QPushButton#issue{\n"
+        self.save_notation.setStyleSheet("QPushButton#save_notation{\n"
 "    background-color: qlineargradient(spread:pad, x1:0, y1:0.659, x2:1, y2:0, stop:0 rgba(57,179,168,255), stop:1 rgba(85, 98, 112, 226));\n"
 "    color:rgba(225, 225, 225, 210);\n"
 "    border-radius:5px; \n"
 "}\n"
-"QPushButton#issue:hover{\n"
+"QPushButton#save_notation:hover{\n"
 "    background-color: qlineargradient(spread:pad, x1:0, y1:0.659, x2:1, y2:0, stop:0 rgba(125, 174, 170, 1), stop:1 rgba(85, 98, 112, 226));\n"
 "}\n"
-"QPushButton#issue:pressed{\n"
+"QPushButton#save_notation:pressed{\n"
 "    padding-left:5px;\n"
 "    padding-top:5px;\n"
 "    background-color:rgba(105, 118, 132, 200);\n"
@@ -1001,6 +1001,27 @@ class Ui_MainWindow(object):
         self.info.setObjectName("info")
         self.horizontalLayout.addWidget(self.info)
         self.stackedWidget.addWidget(self.page_3)
+        self.logout = QtWidgets.QPushButton(self.widget)
+        self.logout.setGeometry(QtCore.QRect(50, 680, 151, 60))
+        self.logout.setMinimumSize(QtCore.QSize(0, 60))
+        font = QtGui.QFont()
+        font.setFamily("Lucida Sans")
+        font.setPointSize(11)
+        self.logout.setFont(font)
+        self.logout.setStyleSheet("QPushButton#logout{\n"
+"    background-color: qlineargradient(spread:pad, x1:0, y1:0.659, x2:1, y2:0, stop:0 rgba(57,179,168,255), stop:1 rgba(85, 98, 112, 226));\n"
+"    color:rgba(225, 225, 225, 210);\n"
+"    border-radius:5px; \n"
+"}\n"
+"QPushButton#logout:hover{\n"
+"    background-color: qlineargradient(spread:pad, x1:0, y1:0.659, x2:1, y2:0, stop:0 rgba(125, 174, 170, 1), stop:1 rgba(85, 98, 112, 226));\n"
+"}\n"
+"QPushButton#logout:pressed{\n"
+"    padding-left:5px;\n"
+"    padding-top:5px;\n"
+"    background-color:rgba(105, 118, 132, 200);\n"
+"}")
+        self.logout.setObjectName("logout")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -1008,6 +1029,9 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(0)
+        self.robot_registration.clicked.connect(self.stackedWidget.show) # type: ignore
+        self.testing.clicked.connect(self.stackedWidget.show) # type: ignore
+        self.analytics.clicked.connect(self.stackedWidget.show) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -1033,6 +1057,7 @@ class Ui_MainWindow(object):
         self.high_priority_bug.setText(_translate("MainWindow", "High prioriy bug"))
         self.bug.setText(_translate("MainWindow", "Bug"))
         self.info.setText(_translate("MainWindow", "Info"))
+        self.logout.setText(_translate("MainWindow", "Log out"))
 import background_rc
 
 
@@ -1040,7 +1065,7 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
+    ui = Ui_menu()
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())

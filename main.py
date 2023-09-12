@@ -190,6 +190,30 @@ class MenuWindow(QMainWindow):
         super().__init__()
         self.ui = Ui_menu()
         self.ui.setupUi(self)
+        self.ui.robot_registration.clicked.connect(self.show_first_page)
+        self.ui.testing.clicked.connect(self.show_second_page)
+        self.ui.analytics.clicked.connect(self.show_third_page)
+        self.ui.logout.clicked.connect(self.logout)
+
+    def show_first_page(self):
+        self.ui.stackedWidget.setCurrentIndex(0)
+
+    def show_second_page(self):
+        self.ui.stackedWidget.setCurrentIndex(1)
+
+    def show_third_page(self):
+        self.ui.stackedWidget.setCurrentIndex(2)
+
+    def logout(self):
+        # Prikazivanje poruke za potvrdu odjave
+        reply = QMessageBox.question(self, 'Logout', 'Are you sure you want to logout?',
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+        # Ako korisnik odabere "Yes" za odjavu
+        if reply == QMessageBox.Yes:
+            self.close()
+            self.login_window = LoginApp()
+            self.login_window.show()
 
 class Auth:
     @staticmethod
