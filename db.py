@@ -22,6 +22,25 @@ class database:
         finally:
             cursor.close()
 
+    def create_table_testing(self):
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS korisnici (
+                    id INTEGER PRIMARY KEY,
+                    label TEXT NOT NULL UNIQUE,
+                    description TEXT NOT NULL,
+                    user TEXT NOT NULL
+                    date TEXT NOT NULL
+                    time TEXT NOT NULL
+                )
+            ''')
+            self.conn.commit()
+        except sqlite3.Error as e:
+            print("Greška prilikom kreiranja tablice:", str(e))
+        finally:
+            cursor.close()
+
     def close(self):
         self.conn.close()
 

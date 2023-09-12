@@ -1,5 +1,9 @@
 <RCC>
   <qresource prefix="newPrefix">
+    <file>sollution_gallery_trey-600x0-removebg-preview.png</file>
     <file>gideon_colors.jpg</file>
+  </qresource>
+  <qresource prefix="newPrefix">
+    <file>o_412230_1024-removebg-preview.png</file>
   </qresource>
 </RCC>

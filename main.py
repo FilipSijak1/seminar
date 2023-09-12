@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from log import Ui_MainWindow
 from reg import Ui_reg_window
+from menu import Ui_menu
 from db import db
 from exceptions import (
     log_error_empty,
@@ -26,6 +27,7 @@ class LoginApp(QMainWindow):
         self.ui.Register.clicked.connect(self.open_registration)
 
         self.registration_window = RegistrationWindow()
+        self.menu_window = MenuWindow()
 
     def show_message_box(self, message):
         msg_box = QMessageBox()
@@ -37,6 +39,10 @@ class LoginApp(QMainWindow):
     def open_registration(self):
         self.hide()
         self.registration_window.show()
+
+    def open_menu(self):
+        self.hide()
+        self.menu_window.show()
 
     def register(self):
         email = self.ui.email.text()
@@ -79,6 +85,8 @@ class LoginApp(QMainWindow):
 
             Auth.login(email, password)
             QMessageBox.information(self, "Success", "Login successful.")
+            self.open_menu()
+
         except log_error_user_not_found:
             self.show_message_box("Incorrect password or email.")
         except log_error_wrong:
@@ -176,6 +184,12 @@ class Korisnik:
             raise reg_error_empty
         finally:
             cursor.close()
+
+class MenuWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.ui = Ui_menu()
+        self.ui.setupUi(self)
 
 class Auth:
     @staticmethod
