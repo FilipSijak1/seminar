@@ -17,6 +17,7 @@ from exceptions import (
     log_error,
 )
 import sqlite3
+from PyQt5.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 
 class LoginApp(QMainWindow):
     def __init__(self):
@@ -26,6 +27,7 @@ class LoginApp(QMainWindow):
 
         self.ui.Login.clicked.connect(self.login)
         self.ui.Register.clicked.connect(self.open_registration)
+        self.current_user = None
 
         self.registration_window = RegistrationWindow()
         self.menu_window = MenuWindow()
@@ -55,6 +57,7 @@ class LoginApp(QMainWindow):
 
     def open_menu(self):
         self.hide()
+        self.menu_window.open_menu(self.current_user)
         self.menu_window.show()
 
     def register(self):
@@ -96,9 +99,13 @@ class LoginApp(QMainWindow):
             if not self.is_password_correct(email, password):
                 raise log_error_wrong_password
 
-            Auth.login(email, password)
-            QMessageBox.information(self, "Success", "Login successful.")
-            self.open_menu()
+            user = Auth.login(email, password)  # Dobijte korisnika nakon uspješne prijave
+            if user:
+                self.current_user = user  # Postavite trenutno prijavljenog korisnika
+                QMessageBox.information(self, "Success", "Login successful.")
+                self.open_menu()
+            else:
+                raise log_error_user_not_found
 
         except log_error_user_not_found:
             self.show_message_box("Incorrect password or email.")
@@ -239,6 +246,21 @@ class MenuWindow(QMainWindow):
         self.ui.testing.clicked.connect(self.show_second_page)
         self.ui.analytics.clicked.connect(self.show_third_page)
         self.ui.logout.clicked.connect(self.logout)
+        self.label_options = ['High priority bug', 'Bug', 'Info']
+        self.ui.messgaes.currentIndexChanged.connect(self.handle_label_selection)
+        self.ui.save_notation.clicked.connect(self.save_test_results)
+        self.current_user = None
+        self.ui.messgaes.setCurrentIndex(0)
+        self.selected_entries = []
+        self.ui.notation_number.display(0)
+        self.ui.high_priority_bug.clicked.connect(self.show_high_priority_bug_data)
+        self.ui.bug.clicked.connect(self.show_bug_data)
+        self.ui.info.clicked.connect(self.show_info_data)
+
+        self.db = QSqlDatabase.addDatabase('QSQLITE')
+        self.db.setDatabaseName('shepherd.db')
+        if not self.db.open():
+            QMessageBox.critical(self, "Error", "Database Error: %s" % self.db.lastError().text())
 
     def show_first_page(self):
         self.ui.stackedWidget.setCurrentIndex(0)
@@ -248,6 +270,16 @@ class MenuWindow(QMainWindow):
 
     def show_third_page(self):
         self.ui.stackedWidget.setCurrentIndex(2)
+
+    def show_high_priority_bug_data(self):
+        print("Show High Priority Bug Data called")
+        self.show_data('High priority bug')
+
+    def show_bug_data(self):
+        self.show_data('Bug')
+
+    def show_info_data(self):
+        self.show_data('Info')
 
     def logout(self):
         # Prikazivanje poruke za potvrdu odjave
@@ -259,6 +291,85 @@ class MenuWindow(QMainWindow):
             self.close()
             self.login_window = LoginApp()
             self.login_window.show()
+
+    def open_menu(self, user):
+        self.current_user = user
+
+    def update_entry_count(self):
+        try:
+            selected_label = self.ui.messgaes.currentText()
+            # Ovdje dodajte logiku za dohvaćanje broja unosa za odabrani label iz baze podataka
+            # i ažurirajte broj prikazan na QLCDNumber widgetu.
+        except Exception as e:
+            print("Error in update_entry_count:", str(e))
+
+    def handle_label_selection(self, index):
+        try:
+            self.selected_label = self.ui.messgaes.currentText()
+            self.update_entry_count()
+        except Exception as e:
+            print("Error in handle_label_selection:", str(e))
+
+    def save_test_results(self):
+        selected_label = self.selected_label
+        print(f"Selected label: {selected_label}")
+        description = self.ui.description.toPlainText()
+        user = self.current_user[1]  # Zamijenite s trenutno prijavljenim korisnikom
+
+        try:
+            # Povezivanje s bazom podataka
+            conn = sqlite3.connect('shepherd.db')
+            cursor = conn.cursor()
+
+            # Spremanje podataka u bazu
+            cursor.execute('''
+                INSERT INTO test_results (label, description, user, date, time)
+                VALUES (?, ?, ?, date('now'), time('now'))
+            ''', (selected_label, description, user))
+
+            conn.commit()
+            conn.close()
+
+            QMessageBox.information(self, "Success", "Test results saved successfully.")
+        except sqlite3.Error as e:
+            QMessageBox.critical(self, "Error", f"Error saving test results: {str(e)}")
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
+
+    def show_high_priority_bugs(self):
+        high_priority_bugs = db.get_high_priority_bugs()
+        self.selected_entries = high_priority_bugs
+        # Ovdje ažurirate QTableView s pronađenim unesima.
+
+    def show_bug_entries(self):
+        bug_entries = db.get_bug_entries()
+        self.selected_entries = bug_entries
+        # Ovdje ažurirate QTableView s pronađenim unesima.
+
+    def show_info_entries(self):
+        info_entries = db.get_info_entries()
+        self.selected_entries = info_entries
+        # Ovdje ažurirate QTableView s pronađenim unesima
+
+    def show_data(self, label):
+        query = QSqlQuery()
+        query.prepare('SELECT * FROM test_results WHERE label = :label')
+        query.bindValue(':label', label)
+        if query.exec_():
+            model = QSqlQueryModel()
+            model.setQuery(query)
+            self.ui.tableView.setModel(model)
+
+            # Ažurirajte QLCDNumber s brojem prikazanih unosa
+            count_query = QSqlQuery()
+            count_query.prepare('SELECT COUNT(*) FROM test_results WHERE label = :label')
+            count_query.bindValue(':label', label)
+            if count_query.exec_() and count_query.first():
+                count = count_query.value(0)
+                self.ui.notation_number.display(count)
+        else:
+            QMessageBox.critical(self, "Error", "Error fetching data: %s" % query.lastError().text())
+
 
 class Auth:
     @staticmethod
