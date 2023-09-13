@@ -1,9 +1,9 @@
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        #definiranje parametara početnog prozora za prijavu
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1000, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -11,17 +11,20 @@ class Ui_MainWindow(object):
         self.widget = QtWidgets.QWidget(self.centralwidget)
         self.widget.setGeometry(QtCore.QRect(0, -1, 1000, 600))
         self.widget.setObjectName("widget")
+        # label pozadine apliakcije
         self.label = QtWidgets.QLabel(self.widget)
         self.label.setGeometry(QtCore.QRect(5, 5, 990, 545))
         self.label.setStyleSheet("border-image: url(:/newPrefix/gideon_colors.jpg);\n"
 "border-radius: 20px;")
         self.label.setObjectName("label")
+        # label pozadine prijave
         self.label_2 = QtWidgets.QLabel(self.widget)
         self.label_2.setGeometry(QtCore.QRect(200, 80, 600, 381))
         self.label_2.setStyleSheet("background-color:rgba(0, 0, 0, 100);\n"
 "border-radius:20px;")
         self.label_2.setText("")
         self.label_2.setObjectName("label_2")
+        # label login
         self.label_3 = QtWidgets.QLabel(self.widget)
         self.label_3.setGeometry(QtCore.QRect(435, 130, 120, 60))
         palette = QtGui.QPalette()
@@ -61,6 +64,7 @@ class Ui_MainWindow(object):
         self.label_3.setFont(font)
         self.label_3.setStyleSheet("color:rgba(255, 255, 255, 210)")
         self.label_3.setObjectName("label_3")
+        #QLineEdit za unos email adrese
         self.email = QtWidgets.QLineEdit(self.widget)
         self.email.setGeometry(QtCore.QRect(290, 200, 400, 35))
         palette = QtGui.QPalette()
@@ -120,6 +124,7 @@ class Ui_MainWindow(object):
 "padding-bottom:7px;")
         self.email.setText("")
         self.email.setObjectName("email")
+        #QTLineEdit za upis lozinke
         self.password = QtWidgets.QLineEdit(self.widget)
         self.password.setGeometry(QtCore.QRect(290, 260, 400, 35))
         palette = QtGui.QPalette()
@@ -179,6 +184,7 @@ class Ui_MainWindow(object):
 "padding-bottom:7px;")
         self.password.setText("")
         self.password.setObjectName("password")
+        #QtPushButton za prijavu korisnika u apliakciju
         self.Login = QtWidgets.QPushButton(self.widget)
         self.Login.setGeometry(QtCore.QRect(431, 340, 120, 60))
         font = QtGui.QFont()
@@ -200,6 +206,7 @@ class Ui_MainWindow(object):
 "}\n"
 "")
         self.Login.setObjectName("Login")
+        #QtPushButton za otvaranje prozora za registraciju
         self.Register = QtWidgets.QPushButton(self.widget)
         self.Register.setGeometry(QtCore.QRect(690, 90, 90, 30))
         font = QtGui.QFont()
@@ -247,7 +254,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
+    #Funkcija za postavljanje tekstualnih resursa i lokalizaciju elemenata korisničkog sučelja (UI) u aplikaciji
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))

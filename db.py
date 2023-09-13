@@ -30,7 +30,7 @@ class database:
 
             self.conn.commit()
         except sqlite3.Error as e:
-            print("Greška prilikom kreiranja tablica:", str(e))
+            print("Error in table creation:", str(e))
         finally:
             cursor.close()
 
@@ -43,7 +43,7 @@ class database:
             high_priority_bugs = cursor.fetchall()
             return high_priority_bugs
         except sqlite3.Error as e:
-            print("Greška prilikom dohvaćanja high priority bugova:", str(e))
+            print("Exception in show_high_priority_bug_data:", str(e))
         except Exception as e:
             print("Exception in show_high_priority_bug_data:", str(e))
         finally:
@@ -58,7 +58,7 @@ class database:
             bug_entries = cursor.fetchall()
             return bug_entries
         except sqlite3.Error as e:
-            print("Greška prilikom dohvaćanja unosa bugova:", str(e))
+            print("Error:", str(e))
         finally:
             cursor.close()
 
@@ -71,7 +71,7 @@ class database:
             info_entries = cursor.fetchall()
             return info_entries
         except sqlite3.Error as e:
-            print("Greška prilikom dohvaćanja unosa info:", str(e))
+            print("error:", str(e))
         finally:
             cursor.close()
 

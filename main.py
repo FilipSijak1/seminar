@@ -19,31 +19,32 @@ from exceptions import (
 import sqlite3
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 
+#inicijalizacija Login prozora
 class LoginApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-
+        #Upravljanje vezama početnog Login prozora
         self.ui.Login.clicked.connect(self.login)
         self.ui.Register.clicked.connect(self.open_registration)
         self.current_user = None
-
         self.registration_window = RegistrationWindow()
         self.menu_window = MenuWindow()
-
         self.show_password_checkbox = QCheckBox("Show Password", self.ui.centralwidget)
         self.show_password_checkbox.setGeometry(670, 270, 15, 15)
         self.show_password_checkbox.setChecked(False)
         self.show_password_checkbox.stateChanged.connect(self.toggle_password_visibility)
         self.ui.password.setEchoMode(QLineEdit.Password)
 
+    #metoda za upravljanje vidljivosti lozinke kod upisivanja lozinke
     def toggle_password_visibility(self, state):
         if state == Qt.Checked:
             self.ui.password.setEchoMode(QLineEdit.Normal)
         else:
             self.ui.password.setEchoMode(QLineEdit.Password)
 
+    #metoda prikaza obavijesne poruke
     def show_message_box(self, message):
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Critical)
@@ -51,40 +52,18 @@ class LoginApp(QMainWindow):
         msg_box.setText(message)
         msg_box.exec_()
 
+    #metoda za otvaranje prozora za registraciju korisnika nakon klika na gumb 'Register'
     def open_registration(self):
         self.hide()
         self.registration_window.show()
 
+    #metoda za otvaranje prozora lavnog izbornika aplikacije
     def open_menu(self):
         self.hide()
         self.menu_window.open_menu(self.current_user)
         self.menu_window.show()
 
-    def register(self):
-        email = self.ui.email.text()
-        username = self.ui.username.text()
-        password = self.ui.password.text()
-        confirm_password = self.ui.confirm_password.text()
-
-        try:
-            if not all([email, username, password, confirm_password]):
-                raise reg_error_empty
-
-            if password != confirm_password:
-                raise reg_error_password_mismatch
-
-            user = Korisnik(email, username, password)
-            user.register()
-            QMessageBox.information(self, "Success", "Registration successful.")
-        except reg_error_taken:
-            self.show_message_box("This email address is already taken.")
-        except reg_error_empty:
-            self.show_message_box("You did not fill all required fields.")
-        except reg_error_password_mismatch:
-            self.show_message_box("Passwords do not match.")
-        except Exception as e:
-            self.show_message_box(f"An error occurred: {str(e)}")
-
+    #metoda za prijavu u aplikaciju
     def login(self):
         email = self.ui.email.text()
         password = self.ui.password.text()
@@ -114,6 +93,7 @@ class LoginApp(QMainWindow):
         except log_error_empty:
             self.show_message_box("You did not fill all required fields.")
 
+    #Metoda za kontrolu korisnika u bazi
     def is_user_in_db(self, email, password):
         cursor = db.conn.cursor()
         cursor.execute('SELECT * FROM korisnici WHERE email = ? AND password = ?', (email, password))
@@ -121,6 +101,7 @@ class LoginApp(QMainWindow):
         cursor.close()
         return user is not None
 
+    #metoda za provjeru lozinke
     def is_password_correct(self, email, password):
         cursor = db.conn.cursor()
         cursor.execute('SELECT * FROM korisnici WHERE email = ? AND password = ?', (email, password))
@@ -128,12 +109,12 @@ class LoginApp(QMainWindow):
         cursor.close()
         return user is not None
 
+#inicijalizacija prozora za prijavu
 class RegistrationWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = Ui_reg_window()
         self.ui.setupUi(self)
-
         self.ui.user_register.clicked.connect(self.register)
         self.ui.back.clicked.connect(self.back_main_window)
 
@@ -156,24 +137,27 @@ class RegistrationWindow(QMainWindow):
         self.password.setEchoMode(QLineEdit.Password)
         self.confirm_password.setEchoMode(QLineEdit.Password)
 
+    #metoda za upravljanje vidljivost lozinke kod upisivanja
     def toggle_password_visibility(self, state):
         if state == Qt.Checked:
             self.password.setEchoMode(QLineEdit.Normal)
         else:
             self.password.setEchoMode(QLineEdit.Password)
 
+    # metoda za upravljanje vidljivost ponovljene lozinke kod upisivanja
     def toggle_confirm_password_visibility(self, state):
         if state == Qt.Checked:
             self.confirm_password.setEchoMode(QLineEdit.Normal)
         else:
             self.confirm_password.setEchoMode(QLineEdit.Password)
 
-
+    #Metoda za povratak na početni prozor aplikacije
     def back_main_window(self):
         self.hide()
         self.login_window = LoginApp()
         self.login_window.show()
 
+    #metoda za prikaz obavijesne poruke
     def show_message_box(self, message):
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Critical)
@@ -181,6 +165,7 @@ class RegistrationWindow(QMainWindow):
         msg_box.setText(message)
         msg_box.exec_()
 
+    #metoda za registraciju korisnika
     def register(self):
         email = self.ui.email.text()
         username = self.ui.username.text()
@@ -211,6 +196,7 @@ class RegistrationWindow(QMainWindow):
         except Exception as e:
             self.show_message_box(f"An error occurred: {str(e)}")
 
+    #metoda za provjeru domene kod registracije
     def is_valid_email_domain(self, email):
         allowed_domains = ["tvz.hr"]
         domain = email.split('@')[1]
@@ -222,6 +208,7 @@ class Korisnik:
         self.username = username
         self.password = password
 
+    #Metoda za spremanje korisnika u tablicu korisnici
     def register(self):
         try:
             cursor = db.conn.cursor()
@@ -237,6 +224,8 @@ class Korisnik:
         finally:
             cursor.close()
 
+
+#Inicijalizacija glavnog izbornika aplikacije
 class MenuWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -262,47 +251,54 @@ class MenuWindow(QMainWindow):
         if not self.db.open():
             QMessageBox.critical(self, "Error", "Database Error: %s" % self.db.lastError().text())
 
+    #Metoda za prikaz prve stanice stacked widgeta
     def show_first_page(self):
         self.ui.stackedWidget.setCurrentIndex(0)
 
+    # Metoda za prikaz druge stanice stacked widgeta
     def show_second_page(self):
         self.ui.stackedWidget.setCurrentIndex(1)
 
+    # Metoda za prikaz treće stanice stacked widgeta
     def show_third_page(self):
         self.ui.stackedWidget.setCurrentIndex(2)
 
+    # Metoda za prikaz podataka o 'high priority' bugovima
     def show_high_priority_bug_data(self):
         print("Show High Priority Bug Data called")
         self.show_data('High priority bug')
 
+    #Metoda za prikaz podataka o bugovima
     def show_bug_data(self):
         self.show_data('Bug')
 
+    #Metoda za prikaz informacija
     def show_info_data(self):
         self.show_data('Info')
 
+    #metoda za odjavu iz aplikacije
     def logout(self):
         # Prikazivanje poruke za potvrdu odjave
         reply = QMessageBox.question(self, 'Logout', 'Are you sure you want to logout?',
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
-        # Ako korisnik odabere "Yes" za odjavu
         if reply == QMessageBox.Yes:
             self.close()
             self.login_window = LoginApp()
             self.login_window.show()
 
+    #Metoda za dohvaćanje prijavljenog korisnika
     def open_menu(self, user):
         self.current_user = user
 
+    #Metoda za ažuriranje broja unosa
     def update_entry_count(self):
         try:
-            selected_label = self.ui.messgaes.currentText()
-            # Ovdje dodajte logiku za dohvaćanje broja unosa za odabrani label iz baze podataka
-            # i ažurirajte broj prikazan na QLCDNumber widgetu.
+            self.selected_label = self.ui.messgaes.currentText()
         except Exception as e:
             print("Error in update_entry_count:", str(e))
 
+    #metoda za promjenu selektirane opcije u padajućem izborniku
     def handle_label_selection(self, index):
         try:
             self.selected_label = self.ui.messgaes.currentText()
@@ -310,6 +306,7 @@ class MenuWindow(QMainWindow):
         except Exception as e:
             print("Error in handle_label_selection:", str(e))
 
+    #metoda za spremanje podataka testiranja u bazu
     def save_test_results(self):
         selected_label = self.selected_label
         print(f"Selected label: {selected_label}")
@@ -336,6 +333,7 @@ class MenuWindow(QMainWindow):
         except Exception as e:
             QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
 
+    #metode prikaza
     def show_high_priority_bugs(self):
         high_priority_bugs = db.get_high_priority_bugs()
         self.selected_entries = high_priority_bugs

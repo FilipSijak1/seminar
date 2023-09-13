@@ -93,9 +93,11 @@ class Ui_menu(object):
         self.verticalLayout.addWidget(self.analytics)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
+        #kreiranje QStackedWidgeta
         self.stackedWidget = QtWidgets.QStackedWidget(self.widget)
         self.stackedWidget.setGeometry(QtCore.QRect(260, 10, 725, 740))
-        self.stackedWidget.setStyleSheet("background-color: qlineargradient(spread:pad, x1:1, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));\n"
+        self.stackedWidget.setStyleSheet("background-color: qlineargradient(spread:pad, x1:1, y1:0, x2:1, y2:0,\n"
+                                         " stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 255));\n"
 "")
         self.stackedWidget.setObjectName("stackedWidget")
         self.page_1 = QtWidgets.QWidget()
@@ -835,7 +837,7 @@ class Ui_menu(object):
         self.page_3 = QtWidgets.QWidget()
         self.page_3.setObjectName("page_3")
         self.tableView = QtWidgets.QTableView(self.page_3)
-        self.tableView.setGeometry(QtCore.QRect(70, 220, 551, 481))
+        self.tableView.setGeometry(QtCore.QRect(15, 220, 700, 520))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(255, 255, 255, 100))
         brush.setStyle(QtCore.Qt.SolidPattern)
